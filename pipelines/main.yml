@@ -1,0 +1,45 @@
+parameters:
+  - name: environments
+    type: object
+    default:
+      - test
+      - prod
+  - name: regions
+    type: object
+    default:
+      - location: westeurope
+        code: weu
+  - name: buildJobs
+    type: jobList
+    default: []
+  - name: buildSteps
+    type: stepList
+    default: []
+  - name: deploySteps
+    type: stepList
+    default: []
+
+stages:
+  - ${{ if gt(length(parameters.buildSteps), 0) }}:
+    - stage: build
+      jobs:
+        - job: build
+          displayName: Build
+          steps: ${{ parameters.buildSteps }}
+  - ${{ each env in parameters.environments }}:
+    - ${{ each region in parameters.regions }}:
+      - stage: deploy_${{ region.code }}_${{ env }}
+        jobs:
+          - deployment: deploy
+            environment: ${{ env }}
+            strategy:
+              runOnce:
+                deploy:
+                  steps: 
+                  - script: |
+                      echo '##vso[task.setvariable variable=location;isOutput=true;]${{ region.location }}'
+                      echo '##vso[task.setvariable variable=locationCode;isOutput=true;]${{ region.code }}'
+                      echo '##vso[task.setvariable variable=environment;isOutput=true;]${{ env }}'
+                    name: variables
+                  - ${{ parameters.deploySteps }}
+

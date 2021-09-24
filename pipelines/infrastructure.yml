@@ -1,0 +1,20 @@
+trigger:
+- main
+
+variables:
+  - group: DevOps
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+extends:
+  template: main.yml
+  parameters:
+    deploySteps:
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: $(Subscriptions.Production)
+          scriptLocation: 'inlineScript'
+          scriptType: bash
+          inlineScript: | 
+            az group create --location $(variables.location) --name $(Prefix)-$(variables.locationCode)-$(variables.environment)
