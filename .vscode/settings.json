@@ -1,11 +1,11 @@
 {
-    "azureFunctions.deploySubpath": "Functions.HR",
+    "azureFunctions.deploySubpath": "Functions.Management/bin/Release/netcoreapp3.1/publish",
     "azureFunctions.scmDoBuildDuringDeployment": true,
     "azureFunctions.pythonVenv": ".venv",
-    "azureFunctions.projectLanguage": "PowerShell",
+    "azureFunctions.projectLanguage": "C#",
     "azureFunctions.projectRuntime": "~3",
     "debug.internalConsoleOptions": "neverOpen",
     "azureFunctions.postDeployTask": "npm install (functions)",
-    "azureFunctions.preDeployTask": "npm prune (functions)",
+    "azureFunctions.preDeployTask": "publish (functions)",
     "azureFunctions.javaBuildTool": "maven"
 }
